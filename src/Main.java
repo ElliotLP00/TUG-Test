@@ -50,6 +50,16 @@ public class Main {
         }
     }
 
+
+    public void OneSecondSpan(CSVData csvData, int startingElement)
+    {
+        auto startTime = csvData.csvMotionData.elementAt(startingElement).relativeTimeStamp;
+        auto endtime = startTime + 1/*second*/;
+        csvData.csvMotionData.stream().findFirst().
+    }
+
+
+
     //OBS!!! THIS PART NEEDS TO BE WOKED ON!
     public void  dateTimeToTimeDelta(String dateTime)
     {
