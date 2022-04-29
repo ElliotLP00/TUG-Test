@@ -54,7 +54,7 @@ public class Main {
     public void  dateTimeToTimeDelta(String dateTime)
     {
         LocalDate parsedDate = LocalDate.now();
-        DateTimeFormatter dataTimeFormatter = DateTimeFormatter.ofPattern("d 'days' HH:mm:ss:n");
+        DateTimeFormatter dataTimeFormatter = DateTimeFormatter.ofPattern("d 'days' HH:mm:ss.n");//format is 0 days 00:00:00.0001 BUT first is 0 days 00:00:00
         String text = parsedDate.format(dataTimeFormatter);
         LocalDate parsedDate2 = LocalDate.parse(dateTime, dataTimeFormatter);
         System.out.print(parsedDate2);
