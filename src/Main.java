@@ -1,6 +1,9 @@
 import java.io. * ;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.Vector;
 import java.time.format.DateTimeFormatter;
@@ -8,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 class CSVMotionData{
     //double index,timeStamp,interval,accX,accY,accZ,accGX,accGY,accGZ,rotRateAlpha,rotRateBeta,rotRateGamma,sqrtModule,relativeTimeStamp;
     double accX,accY,accZ,sqrtModule;
-    Timestamp relativeTimeStamp;
+    Date relativeTimeStamp;
 }
 class CSVOrientationData{
     boolean abs;
@@ -50,25 +53,72 @@ public class Main {
         }
     }
 
-
-    public void OneSecondSpan(CSVData csvData, int startingElement)
+    public int OneSecondSpan(CSVData csvData, int startElement)
     {
-        auto startTime = csvData.csvMotionData.elementAt(startingElement).relativeTimeStamp;
-        auto endtime = startTime + 1/*second*/;
-        csvData.csvMotionData.stream().findFirst().
+        Date startTime= csvData.csvMotionData.elementAt(startElement).relativeTimeStamp;
+        double startEpoch = startTime.getTime();
+        int endElement= -1;
+        for (int i = startElement; i<csvData.csvMotionData.size();i++)
+        {
+            if((startEpoch+1000)<=csvData.csvMotionData.elementAt(i).relativeTimeStamp.getTime())
+            {
+                endElement = i;
+                break;
+            }
+            if (i == csvData.csvMotionData.size()-1)
+            {
+                return i;
+            }
+        }
+        if (endElement == -1)
+        {
+            throw new RuntimeException("No span found!");
+        }
+        return endElement;
     }
+
+    public void EnergyAvarage(CSVData csvData,int startElement, int endElement)
+    {
+
+    }
+
+    public void MaxMin()
+    {
+
+    }
+
+    public void StandardDiviation()
+    {
+
+    }
+
+    public void CoefficientOfVariation()
+    {
+
+    }
+
+    public void ApproximateEntropy()
+    {
+
+    }
+
+
 
 
 
     //OBS!!! THIS PART NEEDS TO BE WOKED ON!
-    public void  dateTimeToTimeDelta(String dateTime)
+    public Date  dateTimeToTimeDelta(String dateTime)
     {
-        LocalDate parsedDate = LocalDate.now();
-        DateTimeFormatter dataTimeFormatter = DateTimeFormatter.ofPattern("d 'days' HH:mm:ss.n");//format is 0 days 00:00:00.0001 BUT first is 0 days 00:00:00
-        String text = parsedDate.format(dataTimeFormatter);
-        LocalDate parsedDate2 = LocalDate.parse(dateTime, dataTimeFormatter);
-        System.out.print(parsedDate2);
+        //format is 0 days 00:00:00.0001 BUT first is 0 days 00:00:00
+        Date date1= null;
+        try {
+            date1 =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(dateTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date1;
     }
+
     public CSVData ReadCSVIntoMemory(String motionPath, String orientationPath)
     {
         CSVData csvData = new CSVData();
@@ -157,8 +207,7 @@ public class Main {
                     break;
                 case 13 :
                     //csvMotionDataVector.lastElement().relativeTimeStamp = new Timestamp(sc.next());
-                    dateTimeToTimeDelta(sc.next());
-                    System.out.print('\n');
+                    csvMotionDataVector.lastElement().relativeTimeStamp = dateTimeToTimeDelta(sc.next());
                     counter=-1;
                     break;
             }
